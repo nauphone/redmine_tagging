@@ -106,6 +106,13 @@ module TaggingPlugin
 
           if @tags_to_update
             set_tag_list_on(project_context, @tags_to_update)
+            @tags_to_update.split(', ').each do |tag|
+              tag_find = Tag.where(:name => tag).last
+              if !tag_find.nil?
+                tag_find.last_update = Date.current
+                tag_find.save
+              end
+            end
           end
 
           true
@@ -120,14 +127,6 @@ module TaggingPlugin
           end
           true
         end
-    end
-  end
-
-  module TaggingHelperPatch
-    def self.included(base)
-      base.class_eval do
-        helper :tagging
-      end
     end
   end
 
@@ -159,8 +158,6 @@ end
 Issue.send(:include, TaggingPlugin::IssuePatch) unless Issue.included_modules.include? TaggingPlugin::IssuePatch
 
 WikiPage.send(:include, TaggingPlugin::WikiPagePatch) unless WikiPage.included_modules.include? TaggingPlugin::WikiPagePatch
-
-ApplicationController.send(:include, TaggingPlugin::TaggingHelperPatch) unless ApplicationController.include? TaggingPlugin::TaggingHelperPatch
 
 WikiController.send(:include, TaggingPlugin::WikiControllerPatch) unless WikiController.included_modules.include? TaggingPlugin::WikiControllerPatch
 

@@ -4,6 +4,7 @@ ActionDispatch::Callbacks.to_prepare do
   require 'tagging_plugin/tagging_patches'
   require 'tagging_plugin/tagging_query_patch'
   require 'tagging_plugin/api_template_handler_patch'
+  require 'tagging_plugin/application_helper_path.rb'
 
   if !Issue.searchable_options[:include].include? :issue_tags
     Issue.searchable_options[:columns] << "#{IssueTag.table_name}.tag"
@@ -25,7 +26,9 @@ Redmine::Plugin.register :redmine_tagging do
   version '0.0.1'
 
   settings :default => { :dynamic_font_size => "1", :sidebar_tagcloud => "1", :wiki_pages_inline  => "0", :issues_inline => "0" }, :partial => 'tagging/settings'
-
+  project_module :issue_tags do
+    permission :issue_tags, {:issues => :tags}, :require => :loggedin
+  end
   Redmine::WikiFormatting::Macros.register do
     desc "Wiki/Issues tagcloud"
     macro :tagcloud do |obj, args|

@@ -1,7 +1,12 @@
 module TaggingPlugin
   module Hooks
     class LayoutHook < Redmine::Hook::ViewListener
-      def view_issues_sidebar_planning_bottom(context={})
+      def view_issues_sidebar_queries_bottom(context={})
+        if defined? context[:project].module_enabled?
+          if !context[:project].module_enabled?('issue_tags')
+            return ''
+          end
+        end
         return '' if Setting.plugin_redmine_tagging[:sidebar_tagcloud] != "1"
 
         return context[:controller].send(:render_to_string, {
