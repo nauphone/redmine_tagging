@@ -63,6 +63,7 @@ module TaggingPlugin
         acts_as_taggable
 
         after_save :cleanup_tags
+        before_save :save_tags
 
         has_many :issue_tags
 
