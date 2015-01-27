@@ -27,8 +27,7 @@ module TaggingPlugin
 
       base.class_eval do
         unloadable
-
-        attr_writer :tags_to_update
+        attr_accessor :tags_to_update
 
         before_save :update_tags
         acts_as_taggable
@@ -57,7 +56,7 @@ module TaggingPlugin
       base.class_eval do
         unloadable
 
-        attr_writer :tags_to_update
+        attr_accessor :tags_to_update
 
         before_save :update_tags
         acts_as_taggable
