@@ -62,7 +62,7 @@ module TaggingPlugin
         acts_as_taggable
 
         after_save :cleanup_tags
-        before_save :save_tags
+        before_save {|issue| issue.send :save_tags unless issue.new_record?}
 
         has_many :issue_tags
 
